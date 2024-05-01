@@ -1,0 +1,21 @@
+# Production Rules:
+Input -> Prompt Expression
+Primitive -> Number
+Primitive -> Variable
+Prompt -> "Enter an arithmetic expression:"
+Expression -> Term
+Expression -> Term AddOp Expression
+Term -> Factor
+Term -> Factor MulOp Term
+Factor -> Primary
+Factor -> Primary ExpOp Factor
+Primary -> Number
+Primary -> ( Expression )
+AddOp -> +
+AddOp -> -
+MulOp -> *
+MulOp -> /
+ExpOp -> ^
+Number -> Digit
+Number -> Digit Number
+Digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
