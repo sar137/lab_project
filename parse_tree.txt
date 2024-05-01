@@ -1,0 +1,29 @@
+                     Input
+                      |
+                   Prompt
+                      |
+                 Expression
+               /         |        \
+             Term       AddOp     Expression
+             |          /   \         |
+           Factor     +      Term    Factor
+           |         / \             |
+        Primary    3   Term       Primary
+        |               |             |
+      Number           Factor       Expression
+       |               /    \           |
+       3            Factor  MulOp     Factor
+                     /   \            /    \
+                 Primary  ExpOp  Primary  Primary
+                 /     \           |         |
+               Number   (       Expression   Number
+                 |              |         |
+                 4             Term       2
+                                 |
+                                Factor
+                                 |
+                               Primary
+                                 |
+                               Number
+                                 |
+                                 1
