@@ -1,57 +1,56 @@
-import re
+def tokenize_input(input_string):
+    # Define regex patterns for each token type
+    patterns = [
+        (r'\+', 'Op'),
+        (r'-', 'Op'),
+        (r'\*', 'Op'),
+        (r'/', 'Op'),
+        (r'\^', 'Op'),
+        (r'=', 'AssignOp'),
+        (r';', 'Semicolon'),
+        (r'User\s+In:', 'UserInput'),
+        (r'Print:', 'Print'),
+        (r'EXIT', 'ExitCommand'),
+        (r'[a-zA-Z_][a-zA-Z0-9_]*', 'Variable'),
+        (r'\d+(\.\d*)?', 'Number'),
+        (r'\(', 'LeftParen'),
+        (r'\)', 'RightParen'),
+        (r'\s+', 'Whitespace')
+    ]
 
-# Define regular expressions for tokenization
-token_patterns = [
-    (r'\bPRINT\b', 'PRINT'),       # Match PRINT keyword
-    (r'\bINPUT\b', 'INPUT'),       # Match INPUT keyword
-    (r'\b[a-zA-Z]+\b', 'IDENTIFIER'),  # Match identifiers
-    (r'\d+', 'NUMBER'),            # Match numbers
-    (r'\+', 'ADD_OP'),             # Match addition operator
-    (r'-', 'SUB_OP'),              # Match subtraction operator
-    (r'\*', 'MUL_OP'),             # Match multiplication operator
-    (r'/', 'DIV_OP'),              # Match division operator
-    (r'\^', 'EXP_OP'),             # Match exponentiation operator
-    (r'\(', 'LPAREN'),             # Match left parenthesis
-    (r'\)', 'RPAREN'),             # Match right parenthesis
-    (r'=', 'ASSIGN'),              # Match assignment operator
-]
-
-def tokenize(expression):
     tokens = []
-    while expression:
+    input_string = input_string.strip()
+    line_number = 1
+
+    while input_string:
         match = None
-        for pattern, token_type in token_patterns:
-            regex = re.compile(pattern)
-            match = regex.match(expression)
-            if match:
-                value = match.group(0)
-                tokens.append((token_type, value))
-                expression = expression[len(value):].lstrip()
+        for pattern, token_type in patterns:
+            regex_match = re.match(pattern, input_string)
+            if regex_match:
+                match = (token_type, regex_match.group(0), line_number)
+                input_string = input_string[regex_match.end():].strip()
+                if token_type == 'UserInput' or token_type == 'Print':
+                    line_number += 1
                 break
         if not match:
-            raise ValueError('Invalid character in expression: {}'.format(expression[0]))
+            raise ValueError("Invalid token at line {}: '{}'".format(line_number, input_string))
+        if match[1] != 'Whitespace':
+            tokens.append(match)
+
     return tokens
 
-# Check if parentheses are balanced
-def check_parentheses(expression):
-    stack = []
-    for char in expression:
-        if char == '(':
-            stack.append(char)
-        elif char == ')':
-            if not stack:
-                return False
-            stack.pop()
-    return not stack
 
-# Example usage
-expression = input("Enter an arithmetic expression: ")
-if not check_parentheses(expression):
-    print("Error: Unmatched parentheses in expression")
-else:
-    try:
-        tokens = tokenize(expression)
-        print("Tokens:", tokens)
-    except ValueError as e:
-        print("Error:", e)
+# Example usage:
+input_string = input("Enter an expression: ")
 
+try:
+    input_tokens = tokenize_input(input_string)
+    for token_type, token_value, line_number in input_tokens:
+        print("Token Value:", token_value)
+
+    parser = Parser(input_tokens)
+    result = parser.parse()
+    print("Parse Result:", result)
+
+except ValueError as e:
+    print("Error:", e)
