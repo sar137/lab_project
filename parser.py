@@ -1,13 +1,12 @@
 import re
-
 def tokenize_input(input_string):
     # Define regex patterns for each token type
     patterns = [
-        (r'\+', 'AddOp'),
-        (r'-', 'SubOp'),
-        (r'\*', 'MulOp'),
-        (r'/', 'DivOp'),
-        (r'\^', 'ExpOp'),
+        (r'\+', 'Op'),
+        (r'-', 'Op'),
+        (r'\*', 'Op'),
+        (r'/', 'Op'),
+        (r'\^', 'Op'),
         (r'=', 'AssignOp'),
         (r';', 'Semicolon'),
         (r'User\s+In:', 'UserInput'),
@@ -67,17 +66,17 @@ class Parser:
 
     def expression(self):
         term_value = self.term()
-        while self.current_token and self.current_token[0] == 'AddOp' and self.current_token[1] in ('+', '-'):
+        while self.current_token and self.current_token[0] == 'Op' and self.current_token[1] in ('+', '-'):
             operator = self.current_token[1]
-            self.match('AddOp')
+            self.match('Op')
             term_value = ('BinaryOp', operator, term_value, self.term())
         return term_value
 
     def term(self):
         factor_value = self.factor()
-        while self.current_token and self.current_token[0] == 'MulOp' and self.current_token[1] in ('*', '/'):
+        while self.current_token and self.current_token[0] == 'Op' and self.current_token[1] in ('*', '/'):
             operator = self.current_token[1]
-            self.match('MulOp')
+            self.match('Op')
             factor_value = ('BinaryOp', operator, factor_value, self.factor())
         return factor_value
 
